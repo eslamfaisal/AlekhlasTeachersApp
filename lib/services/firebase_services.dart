@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:alekhlas_teachers/models/resources.dart';
 import 'package:alekhlas_teachers/models/status.dart';
-import 'package:alekhlas_teachers/screens/system_users/model/system_user_model.dart';
+import 'package:alekhlas_teachers/screens/login/model/teacher_model.dart';
 import 'package:alekhlas_teachers/services/shared_pref_services.dart';
 import 'package:alekhlas_teachers/utils/constants.dart';
 import 'package:alekhlas_teachers/utils/shared_preferences_constants.dart';
@@ -17,20 +17,20 @@ class FirebaseServices {
   var db = FirebaseFirestore.instance;
   var auth = FirebaseAuth.instance;
 
-  StreamController<SystemUserModel> userController =
-      StreamController<SystemUserModel>();
+  StreamController<TeacherModel> userController =
+      StreamController<TeacherModel>();
 
-  Future<Resource<SystemUserModel>> getSystemUserProfile(String userId) async {
+  Future<Resource<TeacherModel>> getSystemUserProfile(String userId) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> value =
           await db.collection('system_users').doc(userId).get();
       if (value.exists) {
-        SystemUserModel userModel = SystemUserModel.fromJson(value.data()!);
+        TeacherModel userModel = TeacherModel.fromJson(value.data()!);
 
         userController.add(userModel);
         await locator<SharedPrefServices>().saveBoolean(LOGGED_IN, true);
-        await locator<SharedPrefServices>().saveString(
-            USER_DETAILS, jsonEncode(userModel.toJson(withCreatedAt: false)));
+        await locator<SharedPrefServices>()
+            .saveString(USER_DETAILS, jsonEncode(userModel.toJson()));
 
         return Resource(Status.SUCCESS, data: userModel);
       } else {
@@ -162,51 +162,12 @@ class FirebaseServices {
         .update({"status": status}).then((value) => print('customer updated'));
   }
 
-  Future<Resource<SystemUserModel>> createNewSystemUser(String name,
-      String email, String password, List<String> selectedRules) async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-
-      Resource<SystemUserModel> storeUserResponse = await storeSystemUserInfo(
-          userCredential.user!, name, password, selectedRules);
-      if (storeUserResponse.status == Status.SUCCESS) {
-        return Resource(Status.SUCCESS, data: storeUserResponse.data);
-      } else {
-        return Resource(Status.ERROR,
-            errorMessage: storeUserResponse.toString());
-      }
-    } on FirebaseAuthException catch (e) {
-      return Resource(Status.ERROR, errorMessage: e.toString());
-    } catch (e) {
-      return Resource(Status.ERROR, errorMessage: e.toString());
-    }
-  }
-
-  Future<Resource<SystemUserModel>> storeSystemUserInfo(
-      User data, String name, password, List<String> selectedRules) async {
-    SystemUserModel model = SystemUserModel(
-      name: name,
-      email: data.email,
-      id: data.uid,
-      roles: selectedRules,
-      password: password,
-      is_super_admin: selectedRules.contains(SUPER_ADMIN),
-    );
-    try {
-      await db.collection("system_users").doc(data.uid).set(model.toJson());
-      return Resource(Status.SUCCESS, data: model);
-    } on FirebaseAuthException catch (e) {
-      return Resource(Status.ERROR, errorMessage: e.toString());
-    }
-  }
-
-  Future<Resource<List<SystemUserModel>>> getSystemUsers() async {
-    List<SystemUserModel> systemUsers = [];
+  Future<Resource<List<TeacherModel>>> getSystemUsers() async {
+    List<TeacherModel> systemUsers = [];
     try {
       await db.collection("system_users").get().then((value) {
         value.docs.forEach((element) {
-          systemUsers.add(SystemUserModel.fromJson(element.data()));
+          systemUsers.add(TeacherModel.fromJson(element.data()));
         });
       });
       return Resource(Status.SUCCESS, data: systemUsers);
@@ -231,7 +192,7 @@ class FirebaseServices {
     }
   }
 
-  void deleteUser(SystemUserModel systemUser) async {
+  void deleteUser(TeacherModel systemUser) async {
     db
         .collection("system_users")
         .doc(systemUser.id)

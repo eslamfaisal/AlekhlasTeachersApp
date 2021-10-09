@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:alekhlas_teachers/routs/routs_names.dart';
-import 'package:alekhlas_teachers/screens/system_users/model/system_user_model.dart';
+import 'package:alekhlas_teachers/screens/login/model/teacher_model.dart';
 import 'package:alekhlas_teachers/services/firebase_services.dart';
 import 'package:alekhlas_teachers/services/navigation_service.dart';
 import 'package:alekhlas_teachers/utils/constants.dart';
@@ -19,7 +19,7 @@ class SplashViewModel extends BaseViewModel {
       if (isLoggedIn) {
         String userJsonString = await Future.value(prefs.getString(USER_DETAILS));
         Map<String, dynamic> user = await jsonDecode(userJsonString);
-        SystemUserModel userEvent = SystemUserModel.fromJson(user);
+        TeacherModel userEvent = TeacherModel.fromJson(user);
         currentLoggedInUserData = userEvent;
         locator<FirebaseServices>().userController.add(userEvent);
         locator<NavigationService>().navigateToAndClearStack(RouteName.HOME);

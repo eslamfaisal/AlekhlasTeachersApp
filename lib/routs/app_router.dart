@@ -2,11 +2,8 @@ import 'package:alekhlas_teachers/routs/routing_data.dart';
 import 'package:alekhlas_teachers/routs/routs_names.dart';
 import 'package:alekhlas_teachers/screens/home/view/home_screen.dart';
 import 'package:alekhlas_teachers/screens/login/view/login_screen.dart';
-import 'package:alekhlas_teachers/screens/navigation/navigation_index.dart';
-import 'package:alekhlas_teachers/screens/navigation/view/navigation_container.dart';
 import 'package:alekhlas_teachers/screens/not_found_screen/not_found_screen.dart';
 import 'package:alekhlas_teachers/screens/splash/splash_screen.dart';
-import 'package:alekhlas_teachers/screens/system_users/view/system_users_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -29,16 +26,10 @@ class AppRouter {
         return _getPageRoute(LoginScreen(), settings);
 
       case RouteName.HOME:
-        return _getPageRoute(
-            NavigationContainer(HomeScreen(), HOME_INDEX), settings);
-
-      case RouteName.SYSTEM_USERS:
-        return _getPageRoute(
-            NavigationContainer(SystemUsersScreen(), SYSTEM_USERS_INDEX),
-            settings);
+        return _getPageRoute(HomeScreen(), settings);
 
       default:
-        return _getPageRoute(const NotFoundScreen(), settings);
+        return _getPageRoute(NotFoundScreen(), settings);
     }
   }
 }

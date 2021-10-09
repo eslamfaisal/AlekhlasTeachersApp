@@ -8,7 +8,7 @@ import 'package:alekhlas_teachers/models/resources.dart';
 import 'package:alekhlas_teachers/models/status.dart';
 import 'package:alekhlas_teachers/routs/routs_names.dart';
 import 'package:alekhlas_teachers/screens/base_view_model.dart';
-import 'package:alekhlas_teachers/screens/system_users/model/system_user_model.dart';
+import 'package:alekhlas_teachers/screens/login/model/teacher_model.dart';
 import 'package:alekhlas_teachers/services/firebase_services.dart';
 import 'package:alekhlas_teachers/services/navigation_service.dart';
 import 'package:alekhlas_teachers/services/shared_pref_services.dart';
@@ -35,7 +35,7 @@ class LoginViewModel extends BaseViewModel {
         setState(ViewState.Idle);
         return Resource(Status.ERROR, errorMessage: response.errorMessage);
       } else {
-        Resource<SystemUserModel> userDataResponse = await _firebaseServices
+        Resource<TeacherModel> userDataResponse = await _firebaseServices
             .getSystemUserProfile(response.data!.user!.uid);
 
         if (response.status == Status.ERROR) {
