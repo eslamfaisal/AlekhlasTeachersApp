@@ -8,14 +8,9 @@ import 'package:alekhlas_teachers/screens/home/widgets/card.dart';
 import '../../base_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final card_params = {
-      'height': 150,
-      'width': MediaQuery.of(context).size.width * 0.18
-    };
 
     return BaseScreen<HomeViewModel>(
       onModelReady: (viewModel) {},
@@ -25,56 +20,6 @@ class HomeScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                FutureBuilder<DocumentSnapshot>(
-                  future: FirebaseFirestore.instance
-                      .collection('statistics')
-                      .doc('dashboard')
-                      .get(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<DocumentSnapshot> snapshot) {
-                    if (snapshot.hasError) {
-                      return Text("Something went wrong");
-                    }
-
-                    if (snapshot.hasData && !snapshot.data!.exists) {
-                      return Text("Document does not exist");
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      StatisticsModel stat =
-                          StatisticsModel.fromDynamic(snapshot.data!.data());
-                      return Wrap(
-                        children: [
-                          AdminCard(
-                            card: cards[0],
-                            params: card_params,
-                            value: stat.services,
-                            name: tr('services'),
-                          ),
-                          AdminCard(
-                            card: cards[1],
-                            params: card_params,
-                            value: stat.customers_count,
-                            name: tr('customers'),
-                          ),
-                          AdminCard(
-                            card: cards[1],
-                            params: card_params,
-                            value: stat.workers_count,
-                            name: tr('workers'),
-                          ),
-                          AdminCard(
-                            card: cards[3],
-                            params: card_params,
-                            value: stat.total_orders,
-                            name: tr('orders'),
-                          ),
-                        ],
-                      );
-                    }
-                    return Text("loading");
-                  },
-                ),
               ],
             ),
           ),
@@ -83,18 +28,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
-var cards = [
-  {
-    'icon': 0xe148,
-  },
-  {
-    'icon': 0xed14,
-  },
-  {
-    'icon': 0xe04b,
-  },
-  {
-    'icon': 0xe04b,
-  }
-];
