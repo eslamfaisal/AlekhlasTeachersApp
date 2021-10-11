@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      title: 'المدرسه',
+      title: 'المعلم',
       theme: ThemeData(
           primaryColor: Color(0xFFFD5F00),
           primarySwatch: Colors.deepOrange,
