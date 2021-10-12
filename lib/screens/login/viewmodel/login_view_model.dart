@@ -35,9 +35,11 @@ class LoginViewModel extends BaseViewModel {
         setState(ViewState.Idle);
         return Resource(Status.ERROR, errorMessage: response.errorMessage);
       } else {
+        print(response.data!.user!.uid);
         Resource<TeacherModel> userDataResponse = await _firebaseServices
             .getSystemUserProfile(response.data!.user!.uid);
 
+        print(userDataResponse.data!.email);
         if (response.status == Status.ERROR) {
           setState(ViewState.Idle);
           return Resource(Status.ERROR, errorMessage: response.errorMessage);
@@ -47,6 +49,7 @@ class LoginViewModel extends BaseViewModel {
         }
       }
     }catch(e){
+      print("eslamss = ${e.toString()}");
       setState(ViewState.Idle);
       return Resource(Status.ERROR, errorMessage:e.toString());
     }

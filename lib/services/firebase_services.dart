@@ -23,8 +23,9 @@ class FirebaseServices {
   Future<Resource<TeacherModel>> getSystemUserProfile(String userId) async {
     try {
       DocumentSnapshot<Map<String, dynamic>> value =
-          await db.collection('system_users').doc(userId).get();
+          await db.collection('teachers').doc(userId).get();
       if (value.exists) {
+        print(value.data());
         TeacherModel userModel = TeacherModel.fromJson(value.data()!);
 
         userController.add(userModel);
@@ -37,6 +38,7 @@ class FirebaseServices {
         return Resource(Status.ERROR, errorMessage: tr('user_not_found'));
       }
     } catch (e) {
+      print(e.toString());
       return Resource(Status.ERROR, errorMessage: e.toString());
     }
   }
